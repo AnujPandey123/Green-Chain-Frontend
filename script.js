@@ -1,6 +1,11 @@
+const BASE_URL = "https://green-chain-backend.onrender.com"; // 🔥 REPLACE WITH YOUR BACKEND URL
+
 // FETCH KPI DATA
-fetch("/api/stats")
-.then(res => res.json())
+fetch(`${BASE_URL}/api/stats`)
+.then(res => {
+    if (!res.ok) throw new Error("Failed to fetch stats");
+    return res.json();
+})
 .then(data => {
     document.getElementById("totalEmissions").innerText =
         (data.totalEmissions / 1000).toFixed(2) + " tons";
@@ -13,11 +18,17 @@ fetch("/api/stats")
 
     document.getElementById("avgScore").innerText =
         data.avgScore.toFixed(2);
+})
+.catch(err => {
+    console.error("Stats Error:", err);
 });
 
 // EMISSION BY MODE CHART
-fetch("/api/mode-emissions")
-.then(res => res.json())
+fetch(`${BASE_URL}/api/mode-emissions`)
+.then(res => {
+    if (!res.ok) throw new Error("Failed to fetch mode emissions");
+    return res.json();
+})
 .then(data => {
 
     const labels = data.map(item => item._id);
@@ -41,10 +52,13 @@ fetch("/api/mode-emissions")
             }
         }
     });
+})
+.catch(err => {
+    console.error("Mode Emission Error:", err);
 });
 
 // SALES VS PROFIT
-fetch("/api/stats")
+fetch(`${BASE_URL}/api/stats`)
 .then(res => res.json())
 .then(data => {
 
@@ -61,13 +75,20 @@ fetch("/api/stats")
             maintainAspectRatio: false
         }
     });
+})
+.catch(err => {
+    console.error("Sales Profit Error:", err);
 });
 
 // TABLE
-fetch("/api/transactions")
-.then(res => res.json())
+fetch(`${BASE_URL}/api/transactions`)
+.then(res => {
+    if (!res.ok) throw new Error("Failed to fetch transactions");
+    return res.json();
+})
 .then(data => {
     const table = document.getElementById("transactionTable");
+    table.innerHTML = "";
 
     data.forEach(item => {
         table.innerHTML += `
@@ -80,4 +101,7 @@ fetch("/api/transactions")
             </tr>
         `;
     });
+})
+.catch(err => {
+    console.error("Transactions Error:", err);
 });
