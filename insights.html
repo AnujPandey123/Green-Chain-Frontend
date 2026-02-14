@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
         html2pdf().from(element).save("Green_Supply_Chain_ESG_Report.pdf");
     });
 
-    fetch("/api/insights")
+    fetch("https://green-chain-backend.onrender.com/api/insights")
     .then(res => res.json())
     .then(data => {
 
