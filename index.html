@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Green Supply Chain Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>🌿 GreenChain</h2>
+    <ul>
+        <li>Dashboard</li>
+        <li onclick="window.location.href='profitability.html'">Profitability</li>
+        <li onclick="window.location.href='insights.html'">Insights</li>
+
+    </ul>
+</div>
+
+<div class="main">
+
+    <header>
+        <h1>Supply Chain Sustainability Dashboard</h1>
+    </header>
+
+    <!-- KPI CARDS -->
+    <div class="kpi-container">
+        <div class="kpi-card">
+            <h3>Total Emissions</h3>
+            <p id="totalEmissions">Loading...</p>
+        </div>
+
+        <div class="kpi-card">
+            <h3>Total Sales</h3>
+            <p id="totalSales">Loading...</p>
+        </div>
+
+        <div class="kpi-card">
+            <h3>Total Profit</h3>
+            <p id="totalProfit">Loading...</p>
+        </div>
+
+        <div class="kpi-card">
+            <h3>Avg Sustainability Score</h3>
+            <p id="avgScore">Loading...</p>
+        </div>
+    </div>
+
+    <!-- CHARTS -->
+    <div class="chart-grid">
+
+        <div class="chart-card">
+            <h3>Emissions by Transport Mode</h3>
+            <div class="chart-container">
+                <canvas id="modeChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <h3>Sales vs Profit</h3>
+            <div class="chart-container">
+                <canvas id="salesProfitChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-card">
+        <h3>Recent Transactions</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Region</th>
+                    <th>Mode</th>
+                    <th>Emission</th>
+                    <th>Profit</th>
+                </tr>
+            </thead>
+            <tbody id="transactionTable"></tbody>
+        </table>
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

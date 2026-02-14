@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Carbon Insights & Methodology</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>🌿 GreenChain</h2>
+    <ul>
+        <li onclick="window.location.href='index.html'">Dashboard</li>
+        <li onclick="window.location.href='profitability.html'">Profitability</li>
+        <li>Insights</li>
+    </ul>
+</div>
+
+<div class="main">
+    <header>
+        <h1>Carbon Intelligence & Insights</h1>
+    </header>
+
+    <button id="exportBtn" class="export-btn">Export ESG Report</button>
+
+    <!-- EXPLANATION -->
+    <div class="chart-card">
+        <h3>What We Calculate</h3>
+        <p>
+            We calculate total carbon emissions, profitability metrics,
+            carbon intensity (₹ per kgCO₂), and ESG index using real-time logistics data.
+        </p>
+
+        <h3>Carbon Intensity Formula</h3>
+        <p><b>Carbon Intensity</b> = Total Emissions ÷ Total Revenue</p>
+    </div>
+
+    <!-- KPI CARDS -->
+    <div class="profit-container">
+        <div class="profit-card">
+            <h2>Total Shipments</h2>
+            <p id="totalShipments">Loading...</p>
+        </div>
+
+        <div class="profit-card">
+            <h2>Total Emissions</h2>
+            <p id="totalEmissions">Loading...</p>
+        </div>
+
+        <div class="profit-card">
+            <h2>Highest Emission Mode</h2>
+            <p id="worstMode">Loading...</p>
+        </div>
+
+        <div class="profit-card">
+            <h2>Carbon Intensity</h2>
+            <p id="carbonIntensity">Loading...</p>
+        </div>
+
+        <div class="profit-card">
+            <h2>ESG Score Index</h2>
+            <p id="esgScore">Loading...</p>
+        </div>
+    </div>
+
+    <!-- ESG BENCHMARK -->
+    <div class="chart-card" style="margin-top:40px;">
+        <h3>ESG Benchmark Comparison</h3>
+        <p id="esgBenchmark"></p>
+    </div>
+
+    <!-- CARBON BENCHMARK -->
+    <div class="chart-card" style="margin-top:40px;">
+        <h3>Industry Carbon Intensity Comparison</h3>
+        <p id="carbonBenchmark"></p>
+    </div>
+
+    <!-- RECOMMENDATIONS -->
+    <div class="chart-card" style="margin-top:40px;">
+        <h3>Sustainability Recommendations</h3>
+        <div id="recommendations"></div>
+    </div>
+
+    <!-- SIMULATION TOOL -->
+    <div class="chart-card" style="margin-top:40px;">
+        <h3>Carbon Reduction Simulation Tool</h3>
+
+        <label>Reduce High-Emission Mode Usage (%):</label>
+        <input type="range" id="modeReduction" min="0" max="50" value="0">
+        <span id="modeValue">0%</span>
+
+        <br><br>
+
+        <label>Operational Efficiency Improvement (%):</label>
+        <input type="range" id="efficiencyBoost" min="0" max="30" value="0">
+        <span id="effValue">0%</span>
+
+        <br><br>
+
+        <h4>Projected Carbon Intensity:</h4>
+        <p id="simulatedIntensity">--</p>
+
+        <h4>Projected ESG Score:</h4>
+        <p id="simulatedESG">--</p>
+    </div>
+
+    <!-- INSIGHTS -->
+    <div class="chart-card" style="margin-top:40px;">
+        <h3>Real-Time Insights</h3>
+        <p id="analysisText">Loading insights...</p>
+    </div>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    let globalData = null;
+
+    document.getElementById("exportBtn").addEventListener("click", function () {
+        const element = document.querySelector(".main");
+        html2pdf().from(element).save("Green_Supply_Chain_ESG_Report.pdf");
+    });
+
+    fetch("/api/insights")
+    .then(res => res.json())
+    .then(data => {
+
+        globalData = data;
+
+        document.getElementById("totalShipments").innerText = data.totalShipments;
+        document.getElementById("totalEmissions").innerText =
+            (data.totalEmissions / 1000).toFixed(2) + " tons";
+        document.getElementById("worstMode").innerText = data.worstMode;
+        document.getElementById("carbonIntensity").innerText =
+            data.carbonIntensity.toFixed(4) + " kgCO₂ per ₹";
+        document.getElementById("esgScore").innerText =
+            data.esgScore + " / 100";
+
+        const margin = ((data.totalProfit / data.totalSales) * 100).toFixed(2);
+
+        // ESG Benchmark
+        const industryESG = 72;
+        const topQuartile = 88;
+
+        document.getElementById("esgBenchmark").innerHTML = `
+            Company ESG: ${data.esgScore}/100<br>
+            Industry Average: ${industryESG}<br>
+            Top Quartile: ${topQuartile}<br>
+            Gap vs Industry: ${(data.esgScore - industryESG).toFixed(2)}
+        `;
+
+        // Carbon Benchmark
+        const industryCarbon = 0.035;
+
+        document.getElementById("carbonBenchmark").innerHTML = `
+            Company Intensity: ${data.carbonIntensity.toFixed(4)}<br>
+            Industry Average: ${industryCarbon}<br>
+            Difference: ${(data.carbonIntensity - industryCarbon).toFixed(4)}
+        `;
+
+        document.getElementById("analysisText").innerHTML = `
+            • ${data.worstMode} contributes highest emissions.<br><br>
+            • Profit margin: ${margin}%.<br><br>
+            • Carbon intensity: ${data.carbonIntensity.toFixed(4)} kgCO₂/₹.<br><br>
+            • ESG Score: ${data.esgScore}/100.<br><br>
+            Recommendation: Optimizing ${data.worstMode} and improving efficiency will significantly improve ESG performance.
+        `;
+
+        document.getElementById("recommendations").innerHTML = `
+            <b>1. Reduce dependency on ${data.worstMode}.</b><br><br>
+            <b>2. Electrify fleet operations.</b><br><br>
+            <b>3. Implement route optimization AI.</b><br><br>
+            <b>4. Increase sustainability score initiatives.</b><br><br>
+            <b>Business Impact:</b> Improved ESG attracts investors,
+            reduces regulatory risk, and improves profitability.
+        `;
+
+    });
+
+    // SIMULATION
+    const modeSlider = document.getElementById("modeReduction");
+    const effSlider = document.getElementById("efficiencyBoost");
+
+    modeSlider.addEventListener("input", simulate);
+    effSlider.addEventListener("input", simulate);
+
+    function simulate() {
+
+        if (!globalData) return;
+
+        const modeReduction = parseInt(modeSlider.value);
+        const efficiencyBoost = parseInt(effSlider.value);
+
+        document.getElementById("modeValue").innerText = modeReduction + "%";
+        document.getElementById("effValue").innerText = efficiencyBoost + "%";
+
+        const reducedEmission =
+            globalData.totalEmissions *
+            (1 - modeReduction / 100) *
+            (1 - efficiencyBoost / 100);
+
+        const newIntensity = reducedEmission / globalData.totalSales;
+
+        const newESG =
+            (parseFloat(globalData.esgScore) * 0.5 +
+            (newIntensity < globalData.carbonIntensity ? 90 : 60) * 0.5).toFixed(2);
+
+        document.getElementById("simulatedIntensity").innerText =
+            newIntensity.toFixed(4) + " kgCO₂ per ₹";
+
+        document.getElementById("simulatedESG").innerText =
+            newESG + " / 100";
+    }
+
+});
+</script>
+
+</body>
+</html>

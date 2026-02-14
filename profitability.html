@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profitability Analysis</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>🌿 GreenChain</h2>
+    <ul>
+        <li onclick="window.location.href='index.html'">Dashboard</li>
+        <li>Profitability</li>
+        <li onclick="window.location.href='insights.html'">Insights</li>
+    </ul>
+</div>  
+
+<div class="main">
+    <header>
+        <h1>Profitability & Sustainability Analysis</h1>
+    </header>
+
+    <div class="profit-container">
+
+        <div class="profit-card">
+            <h2>Total Profit</h2>
+            <p id="profitValue">Loading...</p>
+        </div>
+
+        <div class="profit-card">
+            <h2>Profit Margin (%)</h2>
+            <p id="profitMargin">Loading...</p>
+        </div>
+
+    </div>
+
+    <div class="chart-card" style="margin-top:40px;">
+        <h3>Profit vs Emissions</h3>
+        <div class="chart-container">
+            <canvas id="profitEmissionChart"></canvas>
+        </div>
+    </div>
+
+</div>
+
+<script>
+fetch("/api/stats")
+.then(res => res.json())
+.then(data => {
+
+    const margin = ((data.totalProfit / data.totalSales) * 100).toFixed(2);
+
+    document.getElementById("profitValue").innerText =
+        "₹" + data.totalProfit.toLocaleString();
+
+    document.getElementById("profitMargin").innerText =
+        margin + "%";
+
+    new Chart(document.getElementById("profitEmissionChart"), {
+        type: 'bar',
+        data: {
+            labels: ["Total Profit", "Total Emissions"],
+            datasets: [{
+                label: "Comparison",
+                data: [data.totalProfit, data.totalEmissions]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+});
+</script>
+
+</body>
+</html>
